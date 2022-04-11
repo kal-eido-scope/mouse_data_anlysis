@@ -3,8 +3,11 @@ import numpy as np
 import json
 import matplotlib.pyplot as plt
 import seaborn as sns
+import random
 from pre_process import pre_process,BRAND,CHANNEL,CORD,SEASON
-COLOR = sns.color_palette(n_colors=100)
+color = sns.color_palette(n_colors=len(BRAND)+1) #sns.light_palette("navy", n_colors=len(BRAND)+1)  #sns.color_palette("cubehelix", n_colors=len(BRAND)+1)
+#random.shuffle(color)
+COLOR = dict(zip(BRAND,color))
 ap_data = pre_process()
 """数据格式形如
 {
@@ -83,8 +86,8 @@ with open('data_analysis\渠道-季节-品牌销售额\single-appearance.json','
 def pre_cur(sale_season:dict):
     """迭代器，返回初始位置，当前项，颜色"""
     cur  = np.array([0.0 for x in range(9)])
-    for i,sale_season in enumerate(sale_season.values()):
-        yield (cur,np.array(list(sale_season.values())),COLOR[i])
+    for brand,sale_season in sale_season.items():
+        yield (cur,np.array(list(sale_season.values())),COLOR[brand])
         cur += np.array(list(sale_season.values()))
 
 def plot():
@@ -103,7 +106,7 @@ def plot():
     plt.yticks(np.arange(0,30000000,5000000),labels=['0.0','0.5','1.0','1.5','2.0','2.5'])
     plt.title('Sales by quarters',fontsize=20,pad=15)
     #plt.legend()
-    plt.savefig(r'data_analysis\渠道-季节-品牌销售额\compare.png')
+    plt.savefig(r'data_analysis\渠道-季节-品牌销售额\new.png')
     plt.show()
 
 def plot_b2b():
@@ -137,5 +140,6 @@ def plot_dis():
     #plt.legend()
     plt.savefig(r'data_analysis\渠道-季节-品牌销售额\dis.png')
     plt.show()
-plot_b2b()
-# plot_dis()
+plot()
+#plot_b2b()
+#plot_dis()
